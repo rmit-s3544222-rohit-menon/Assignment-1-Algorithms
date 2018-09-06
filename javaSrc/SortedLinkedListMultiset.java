@@ -18,7 +18,7 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 		
 		 Node NodeNew = new Node((String) item);
 		 
-		 //if the list is empty then the new node is now the list head.
+		 // if the list is empty or the list head is smaller than the new node, then the new node is now the list head.
 	        
 	        if ((listHead == null) || Integer.parseInt(listHead.getValue()) > Integer.parseInt(NodeNew.getValue()))
 	        {
@@ -26,13 +26,13 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 	            listHead = NodeNew;
 	        }
 
-	      //otherwise we set the current node as the list head, and the previous node as a null.   
+	      // otherwise we set the current node as the list head, and the previous node as a null.   
 	        else 
 	        {
 	            Node currNode = listHead;
 	            Node prevNode = null;
 	   
-	     // we then cycle through the list until the current node is null, so we may add our new node at the end of list.
+	     // we then cycle through the list until the current node is null and the current node is smaller than the new node
 	            while (currNode != null && Integer.parseInt(currNode.getValue()) < Integer.parseInt(NodeNew.getValue())) 
 	            {
 	            	
@@ -43,7 +43,7 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 	                    return;
 	                }
 	                
-	                //set the previous node to the current and the current to the next(to cycle through the list).
+	                //set the previous node to the current and the current to the next (to cycle through the list).
 	                prevNode = currNode;
 	                currNode = currNode.getNext();
 	            }
@@ -61,14 +61,21 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 	public int search(T item) {
 		// Implement me!
 		Node currNode = listHead;
+		Node NodeSearch = new Node((String) item);
 
 		// cycle through nodes in the list again
 		while (currNode != null) {
 
 			// if the value of the search node exists in the list, then return that nodes
-			// ctr value(how many times that item is in the list)
+			// ctr value (how many times that item is in the list)
 			if (currNode.getValue().equals((String) item)) {
 				return currNode.getCtr();
+			}
+			
+			// if we reach a node higher than the search node, then node doesn't exist
+			// so break out of search
+			else if (Integer.parseInt(currNode.getValue()) > Integer.parseInt(NodeSearch.getValue())) {
+				break;
 			}
 
 			currNode = currNode.getNext();
