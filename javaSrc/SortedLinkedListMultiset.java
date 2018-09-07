@@ -48,10 +48,9 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 				prevNode = currNode;
 				currNode = currNode.getNext();
 			}
-
-			NodeNew.nodeNext = currNode;
-			prevNode.nodeNext = NodeNew;
-
+			
+			NodeNew.setNext(currNode);
+			prevNode.setNext(NodeNew);
 		}
 
 		// increase the length of the list by 1.
