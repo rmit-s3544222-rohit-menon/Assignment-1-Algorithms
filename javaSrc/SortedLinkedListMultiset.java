@@ -15,47 +15,48 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 
 	public void add(T item) {
 		// Implement me!
-		
-		 Node NodeNew = new Node((String) item);
-		 
-		 // if the list is empty or the list head is smaller than the new node, then the new node is now the list head.
-	        
-	        if ((listHead == null) || Integer.parseInt(listHead.getValue()) > Integer.parseInt(NodeNew.getValue()))
-	        {
-	        	NodeNew.setNext(listHead);
-	            listHead = NodeNew;
-	        }
 
-	      // otherwise we set the current node as the list head, and the previous node as a null.   
-	        else 
-	        {
-	            Node currNode = listHead;
-	            Node prevNode = null;
-	   
-	     // we then cycle through the list until the current node is null and the current node is smaller than the new node
-	            while (currNode != null && Integer.parseInt(currNode.getValue()) < Integer.parseInt(NodeNew.getValue())) 
-	            {
-	            	
-	            	// if the node we wish to enter is already present in the list then we add 1 to the counter of that node.
-	                if (currNode.getValue().equals(NodeNew.getValue())) 
-	                {
-	                    currNode.addOne();
-	                    return;
-	                }
-	                
-	                //set the previous node to the current and the current to the next (to cycle through the list).
-	                prevNode = currNode;
-	                currNode = currNode.getNext();
-	            }
-	            
-	            NodeNew.nodeNext = currNode;
-	            prevNode.nodeNext = NodeNew;
-	            
-	        }
-	        
-	        //increase the length of the list by 1.
-	        listLength++;
-		
+		Node NodeNew = new Node((String) item);
+
+		// if the list is empty or the list head is smaller than the new node, then the
+		// new node is now the list head.
+
+		if ((listHead == null) || Integer.parseInt(listHead.getValue()) > Integer.parseInt(NodeNew.getValue())) {
+			NodeNew.setNext(listHead);
+			listHead = NodeNew;
+		}
+
+		// otherwise we set the current node as the list head, and the previous node as
+		// a null.
+		else {
+			Node currNode = listHead;
+			Node prevNode = null;
+
+			// we then cycle through the list until the current node is null and the current
+			// node is smaller than the new node
+			while (currNode != null && Integer.parseInt(currNode.getValue()) < Integer.parseInt(NodeNew.getValue())) {
+
+				// if the node we wish to enter is already present in the list then we add 1 to
+				// the counter of that node.
+				if (currNode.getValue().equals(NodeNew.getValue())) {
+					currNode.addOne();
+					return;
+				}
+
+				// set the previous node to the current and the current to the next (to cycle
+				// through the list).
+				prevNode = currNode;
+				currNode = currNode.getNext();
+			}
+
+			NodeNew.nodeNext = currNode;
+			prevNode.nodeNext = NodeNew;
+
+		}
+
+		// increase the length of the list by 1.
+		listLength++;
+
 	} // end of add()
 
 	public int search(T item) {
@@ -71,7 +72,7 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 			if (currNode.getValue().equals((String) item)) {
 				return currNode.getCtr();
 			}
-			
+
 			// if we reach a node higher than the search node, then node doesn't exist
 			// so break out of search
 			else if (Integer.parseInt(currNode.getValue()) > Integer.parseInt(NodeSearch.getValue())) {
@@ -91,6 +92,7 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 		// Implement me!
 		Node currNode = listHead;
 		Node prevNode = null;
+		Node NodeRemove = new Node((String) item);
 
 		// cycle through list again until we reach
 		while (currNode != null) {
@@ -125,6 +127,12 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 				return;
 			}
 
+			// if we reach a node higher than the search node, then node doesn't exist
+			// so break out of search
+			else if (Integer.parseInt(currNode.getValue()) > Integer.parseInt(NodeRemove.getValue())) {
+				break;
+			}
+
 			prevNode = currNode;
 			currNode = currNode.getNext();
 		}
@@ -134,6 +142,7 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 
 		Node currNode = listHead;
 		Node prevNode = null;
+		Node NodeRemove = new Node((String) item);
 
 		// cycle through the list
 		while (currNode != null) {
@@ -162,6 +171,12 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 
 				return;
 
+			}
+
+			// if we reach a node higher than the search node, then node doesn't exist
+			// so break out of search
+			else if (Integer.parseInt(currNode.getValue()) > Integer.parseInt(NodeRemove.getValue())) {
+				break;
 			}
 
 			prevNode = currNode;
