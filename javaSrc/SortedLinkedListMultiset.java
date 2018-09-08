@@ -21,7 +21,7 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 		// if the list is empty or the list head is smaller than the new node, then the
 		// new node is now the list head.
 
-		if ((listHead == null) || Integer.parseInt(listHead.getValue()) > Integer.parseInt(NodeNew.getValue())) {
+		if ((listHead == null) || listHead.getCtr() > NodeNew.getCtr()) {
 			NodeNew.setNext(listHead);
 			listHead = NodeNew;
 		}
@@ -34,7 +34,7 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 
 			// we then cycle through the list until the current node is null and the current
 			// node is smaller than the new node
-			while (currNode != null && Integer.parseInt(currNode.getValue()) < Integer.parseInt(NodeNew.getValue())) {
+			while (currNode != null && currNode.getCtr() < NodeNew.getCtr()) {
 
 				// if the node we wish to enter is already present in the list then we add 1 to
 				// the counter of that node.
@@ -74,7 +74,7 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 
 			// if we reach a node higher than the search node, then node doesn't exist
 			// so break out of search
-			else if (Integer.parseInt(currNode.getValue()) > Integer.parseInt(NodeSearch.getValue())) {
+			else if (currNode.getCtr() > NodeSearch.getCtr()) {
 				break;
 			}
 
@@ -128,7 +128,7 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 
 			// if we reach a node higher than the search node, then node doesn't exist
 			// so break out of search
-			else if (Integer.parseInt(currNode.getValue()) > Integer.parseInt(NodeRemove.getValue())) {
+			else if (currNode.getCtr() > NodeRemove.getCtr()) {
 				break;
 			}
 
@@ -174,7 +174,7 @@ public class SortedLinkedListMultiset<T> extends Multiset<T> {
 
 			// if we reach a node higher than the search node, then node doesn't exist
 			// so break out of search
-			else if (Integer.parseInt(currNode.getValue()) > Integer.parseInt(NodeRemove.getValue())) {
+			else if (currNode.getCtr() > NodeRemove.getCtr()) {
 				break;
 			}
 
