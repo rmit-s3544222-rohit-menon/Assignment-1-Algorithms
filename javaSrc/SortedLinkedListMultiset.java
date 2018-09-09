@@ -1,239 +1,172 @@
 import java.io.PrintStream;
-import java.util.*;
 
-public class SortedLinkedListMultiset<T> extends Multiset<T> {
+// T type must implement Comparable interface
+public class SortedLinkedListMultiset<T  extends Comparable<T>> extends Multiset<T> {
+    protected Node listHead;
+    protected int listLength;
+
+    public SortedLinkedListMultiset() {
+        listHead = null;
+        listLength = 0;
+    } // end of SortedLinkedListMultiset()
+
+
+    public void add(T item) {
+        Node newNode = new Node(item);
+
+        //if the list is empty then the new node is now the list head.
+        if (listHead == null) {
+            listHead = newNode;
+        }
+        else if (item.compareTo(listHead.getValue()) < 0) {
+            newNode.setNext(listHead);
+            listHead = newNode;
+        }
+        //if its the same then we just add to the counter.
+        else if (item.compareTo(listHead.getValue()) == 0) {
+            listHead.addOne();
+        }
+        //otherwise we search for correct position to insert node.
+        else {
+            Node prevNode = getNodeBeforeGreater(item);
+            Node currNode = prevNode.getNext();
+
+            if (currNode != null && currNode.getValue().compareTo(item) == 0) {
+                currNode.addOne();
+                return;
+            }
+            else {
+                newNode.setNext(currNode);
+                prevNode.setNext(newNode);
+            }
+        }
+
+        //increase the length of the list by 1 once added.
+        listLength++;
+    } // end of add()
+
+
+    public int search(T item) {
+        if (listHead == null) {
+            return 0;
+        }
+
+        if (item.compareTo(listHead.getValue()) == 0) {
+            return listHead.getCount();
+        }
+        
+        Node node = getNodeBeforeGreater(item);
+
+        if (node.getNext() != null && node.getNext().getValue().compareTo(item) == 0)
+            return node.getNext().getCount();
+
+        return 0;
+    } // end of add()
+
+
+    public void removeOne(T item) {
+        if (listHead == null) {
+            return;
+        }
+
+        if (listHead.getValue().compareTo(item) == 0) {
+            listHead.minusOne();
+            if (listHead.getCount() == 0) {
+                listHead = listHead.getNext();
+                listLength--;
+            }
+        }
+
+        Node prevNode = getNodeBeforeGreater(item);
+        Node currNode = prevNode.getNext();
+
+        if (currNode != null && currNode.getValue().compareTo(item) == 0) {
+            currNode.minusOne();
+            if (currNode.getCount() == 0) {
+                prevNode.setNext(currNode.getNext());
+                listLength--;
+            }
+        }
+    } // end of removeOne()
+
+
+    public void removeAll(T item) {
+        if (listHead == null) {
+            return;
+        }
+
+        if (listHead.getValue().compareTo(item) == 0) {
+                listHead = listHead.getNext();
+        }
+
+        Node prevNode = getNodeBeforeGreater(item);
+        Node currNode = prevNode.getNext();
 
-	protected Node listHead;
-	protected int listLength;
+        if (currNode != null && currNode.getValue().compareTo(item) == 0) {
+                prevNode.setNext(currNode.getNext());
+        }
 
-	public SortedLinkedListMultiset() {
-		// Implement me!
-		listHead = null;
-		listLength = 0;
+        listLength--;
+    } // end of removeAll()
 
-	} // end of LinkedListMultiset()
 
-	public void add(T item) {
-		// Implement me!
+    public void print(PrintStream out) {
+        Node currNode = listHead;
 
-		Node NodeNew = new Node((String) item);
-
-		// if the list is empty or the list head is smaller than the new node, then the
-		// new node is now the list head.
-
-		if ((listHead == null) || listHead.getCtr() > NodeNew.getCtr()) {
-			NodeNew.setNext(listHead);
-			listHead = NodeNew;
-		}
+        //Cycle through list printing all the nodes and their counter values.
+        while (currNode != null) {
+            out.printf("%s | %d\n", currNode.getValue(), currNode.getCount());
+            currNode = currNode.getNext();
+        }
+    } // end of print()
 
-		// otherwise we set the current node as the list head, and the previous node as
-		// a null.
-		else {
-			Node currNode = listHead;
-			Node prevNode = null;
+    private Node getNodeBeforeGreater(T item) {
+        if (listHead == null)
+            return null;
 
-			// we then cycle through the list until the current node is null and the current
-			// node is smaller than the new node
-			while (currNode != null && currNode.getCtr() < NodeNew.getCtr()) {
+        Node node = listHead;
 
-				// if the node we wish to enter is already present in the list then we add 1 to
-				// the counter of that node.
-				if (currNode.getValue().equals(NodeNew.getValue())) {
-					currNode.addOne();
-					return;
-				}
+        while (node.getNext() != null && (item.compareTo(node.getNext().getValue()) > 0)) {
+            node = node.getNext();
+        }
+        return node;
+    }
 
-				// set the previous node to the current and the current to the next (to cycle
-				// through the list).
-				prevNode = currNode;
-				currNode = currNode.getNext();
-			}
-			
-			NodeNew.setNext(currNode);
-			prevNode.setNext(NodeNew);
-		}
+    private class Node {
+        public T nodeValue;
+        public int count;
+        public Node nodeNext;
 
-		// increase the length of the list by 1.
-		listLength++;
 
-	} // end of add()
+        public Node(T value) {
+            nodeValue = value;
+            nodeNext = null;
+            count = 1;
+        }
 
-	public int search(T item) {
-		// Implement me!
-		Node currNode = listHead;
-		Node NodeSearch = new Node((String) item);
 
-		// cycle through nodes in the list again
-		while (currNode != null) {
+        public int getCount() {
+            return count;
+        }
 
-			// if the value of the search node exists in the list, then return that nodes
-			// ctr value (how many times that item is in the list)
-			if (currNode.getValue().equals((String) item)) {
-				return currNode.getCtr();
-			}
+        public T getValue() {
+            return nodeValue;
+        }
 
-			// if we reach a node higher than the search node, then node doesn't exist
-			// so break out of search
-			else if (currNode.getCtr() > NodeSearch.getCtr()) {
-				break;
-			}
+        public Node getNext() {
+            return nodeNext;
+        }
 
-			currNode = currNode.getNext();
-		}
+        public void setNext(Node next) {
+            nodeNext = next;
+        }
 
-		return 0;
+        public void addOne() {
+            count++;
+        }
 
-		// default return, please override when you implement this method
-
-	} // end of add()
-
-	public void removeOne(T item) {
-		// Implement me!
-		Node currNode = listHead;
-		Node prevNode = null;
-		Node NodeRemove = new Node((String) item);
-
-		// cycle through list again until we reach
-		while (currNode != null) {
-
-			// check to see if current node's value equals the value of the item to remove
-			if (currNode.getValue().equals((String) item)) {
-
-				// subtract one from that node's ctr value.
-				currNode.minusOne();
-
-				// check and see if all of that particular item is over, if so then the node has
-				// to be removed from list
-				if (currNode.getCtr() == 0) {
-
-					// if that node was at the head of the list then set the head as the next node
-					// in the list
-					if (currNode == listHead) {
-						listHead = currNode.getNext();
-					}
-
-					// if the node was in the middle of the list then set the previous nodes next as
-					// the current nodes next.
-					else {
-						prevNode.setNext(currNode.getNext());
-					}
-
-					// decrease the length of the list by one.
-					listLength--;
-
-				}
-
-				return;
-			}
-
-			// if we reach a node higher than the search node, then node doesn't exist
-			// so break out of search
-			else if (currNode.getCtr() > NodeRemove.getCtr()) {
-				break;
-			}
-
-			prevNode = currNode;
-			currNode = currNode.getNext();
-		}
-	} // end of removeOne()
-
-	public void removeAll(T item) {
-
-		Node currNode = listHead;
-		Node prevNode = null;
-		Node NodeRemove = new Node((String) item);
-
-		// cycle through the list
-		while (currNode != null) {
-
-			// if the value of the current node is the value of the item to be completely
-			// removed
-			if (currNode.getValue().equals((String) item)) {
-
-				// if the node is at head of list then set head as the next node in list
-				if (currNode == listHead) {
-
-					listHead = currNode.getNext();
-
-				}
-
-				// if the node is in the middle of the list, set the previous node's next as the
-				// current node's next.
-				else {
-
-					prevNode.setNext(currNode.getNext());
-
-				}
-
-				// reduce list length by one.
-				listLength--;
-
-				return;
-
-			}
-
-			// if we reach a node higher than the search node, then node doesn't exist
-			// so break out of search
-			else if (currNode.getCtr() > NodeRemove.getCtr()) {
-				break;
-			}
-
-			prevNode = currNode;
-			currNode = currNode.getNext();
-
-		}
-	} // end of removeAll()
-
-	public void print(PrintStream out) {
-		// Implement me!
-
-		Node currNode = listHead;
-
-		// Cycle through list printing all the nodes and their counter values.
-		while (currNode != null) {
-			System.out.printf("%s | %d\n", currNode.getValue(), currNode.getCtr());
-			currNode = currNode.getNext();
-		}
-
-	} // end of print()
-
-	private class Node {
-
-		int ctr;
-
-		protected String nodeValue;
-
-		protected Node nodeNext;
-
-		public Node(String value) {
-			nodeValue = value;
-			nodeNext = null;
-			ctr = 1;
-		}
-
-		public int getCtr() {
-			return ctr;
-		}
-
-		public String getValue() {
-			return nodeValue;
-		}
-
-		public Node getNext() {
-			return nodeNext;
-		}
-
-		public void setNext(Node next) {
-			nodeNext = next;
-		}
-
-		public void addOne() {
-			ctr++;
-		}
-
-		public void minusOne() {
-			ctr--;
-		}
-
-	}
+        public void minusOne() {
+            count--;
+        }
+    }
 } // end of class SortedLinkedListMultiset
